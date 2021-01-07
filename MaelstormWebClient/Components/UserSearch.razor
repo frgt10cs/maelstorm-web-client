@@ -1,0 +1,87 @@
+﻿@using MaelstormApi
+@using MaelstormDTO.Responses;
+@inject MaelstormWebClient.Models.WindowState WindowState
+@inject MaelstormWebClient.Services.Abstractions.IDialogService DialogService
+
+<link rel="stylesheet" href="css/userSearch.css" />
+<div id="usersPanel" class="container-fluid container-lg p-4">
+    <div id="userSearchContainer" class="w-100">
+        <div class="row align-items-center">
+            <div class="col-auto d-flex align-items-center">
+                <div for="">Search:</div>
+            </div>
+            <div class="col">
+                <input id="findUserValue" type="text"
+                       @onkeydown="InputKeyDown"
+                       @bind="@searchValue"
+                       @bind:event="oninput" />
+            </div>
+            <div class="col-auto border-left border-light">
+                <button class="btn btn-dark" id="closeUsersPanelBtn"
+                        @onclick="WindowState.Back">
+                    Back
+                </button>
+            </div>
+        </div>
+    </div>
+    <hr class="bg-light" />
+    <div id="findUserResults" class="row px-2 hideScroll">
+        @if (isSearching)
+        {
+            <div>Searching...</div>
+        }
+        else
+        {
+            @if (searchResults != null && searchResults.Count > 0)
+            {
+                foreach (var userInfo in searchResults)
+                {
+                    <div class="userPreviewInner col-12 col-sm-6 col-md-4 col-lg-3"
+                         @onclick="(() => OpenDialog(userInfo.Id))">
+                        <img class="userPreviewAvatar" src="http://localhost:5000/images/@userInfo.Avatar" alt="User's avatar" />
+                        <div class="d-flex justify-content-between flex-column pl-1 overflow-hidden">
+                            <div class="@("userPreviewNickname text-truncate" + (userInfo.OnlineStatus ? "text-success" : ""))">
+                                @userInfo.Nickname
+                            </div>
+                            <div class="userPreviewStatus text-truncate">
+                                @userInfo.Status
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div>Not found</div>
+            }
+        }
+    </div>
+</div>
+
+@code
+{
+    private ApiClient api = ApiClient.Instance;
+
+    private string searchValue;
+    private bool isSearching;
+    private List<UserInfo> searchResults = new List<UserInfo>();
+
+    private async Task InputKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            isSearching = true;
+            StateHasChanged();
+            var results = await api.Users.FindUsersByNicknameAsync(searchValue);
+            this.searchResults = results;
+            isSearching = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task OpenDialog(long userId)
+    {
+        WindowState.CloseAll();
+        await DialogService.OpenDialogByInterlocutorIdAsync(userId);
+    }
+}

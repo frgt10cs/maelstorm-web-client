@@ -1,0 +1,27 @@
+﻿@inject MaelstormWebClient.Models.WindowState WindowState
+<link rel="stylesheet" href="/css/settings.css">
+<div id="settingsContainer" class="col-12 col-lg-auto d-none d-lg-block p-0 bg-dark-3">
+    <div id="settingsInnerContainer">
+        <div class="settingsBlock text-center position-relative" id="settingsTitle">
+            <div>
+                Settings
+            </div>
+            <div id="settingsCloseBtn" @onclick="WindowState.Back">
+                🗙
+            </div>
+        </div>
+        <div class="settingsBlock settingsContainer bg-dark-2">
+            <div class="settingsBlockTitle">
+                Sessions
+            </div>
+            <div class="settingsBlockInner">
+                <div id="sessions">
+                    <div id="sessionsContainer">
+
+                    </div>
+                    <input type="button" id="loadSessions" class="btnLink" value="Reload">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

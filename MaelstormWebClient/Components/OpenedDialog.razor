@@ -1,0 +1,74 @@
+﻿@implements IObserver<Dialog>
+@inject MaelstormWebClient.Services.Abstractions.IDialogService DialogService
+@using MaelstormApi.Models
+<link rel="stylesheet" href="/css/openedDialog.css">
+<div id="openedDialogContainer" class="col-12 col-sm-12 col-md-12 col-lg-8 h-100 bg-dark text-white p-0 d-none d-lg-flex flex-column justify-content-between">
+    <div id="dialogInfoContainer" class="dialogInfo text-center pt-2 pb-1 bg-dark-2">
+        <div id="dialogInfoTitle">@openedDialog?.dialog.InterlocutorNickname</div>
+        <div id="dialogInfoStatus">*status*</div>
+    </div>
+    <div id="panelsInner" class="pt-2 pb-2 container-lg h-100 y-scroll bg-dark-3">
+        @if (openedDialog != null)
+        {
+            @foreach (var message in openedDialog.Messages)
+            {
+                <div class="messageContainer mt-2 overflow-hidden">
+                    <div class=@("message text-white px-2 py-1 mw-75 rounded d-inline-block bg-dark-6 ")>
+                        <div class="messageText text-break">
+                            @message.Text
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+
+    </div>
+    <div class="container-lg bg-dark-2">
+        <div class="row p-2">
+            <input @bind="messageText" type="text" id="messageTextBox" class="form-control col col-sm col-md col-lg">
+            <button id="messageSendBtn" class="btn col-auto col-sm-auto col-md-auto col-lg-auto" @onclick="SendMessage">
+                <svg class="bi bi-triangle rotate invert" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                          d="M7.938 2.016a.146.146 0 00-.054.057L1.027 13.74a.176.176 0 00-.002.183c.016.03.037.05.054.06.015.01.034.017.066.017h13.713a.12.12 0 00.066-.017.163.163 0 00.055-.06.176.176 0 00-.003-.183L8.12 2.073a.146.146 0 00-.054-.057A.13.13 0 008.002 2a.13.13 0 00-.064.016zm1.044-.45a1.13 1.13 0 00-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566z"
+                          clip-rule="evenodd" />
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>
+
+@code{
+
+    private Dialog openedDialog {get;set;}
+    private string messageText;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        DialogService.Subscribe(this);
+    }
+
+    private async Task SendMessage()
+    {
+        // validate text
+
+        await DialogService.OpenedDialog.SendMessageAsync(messageText);
+    }
+
+    public void OnNext(Dialog dialog)
+    {
+        openedDialog = dialog;
+        StateHasChanged();
+        if (!openedDialog.Messages.Any())
+        {
+            openedDialog.UploadMessagesAsync(false, 0, 100);
+            openedDialog.UploadMessagesAsync(true, 0, 100);
+            StateHasChanged();
+        }
+    }
+
+    public void OnCompleted() { }
+
+    public void OnError(Exception ex) { }
+}

@@ -1,0 +1,146 @@
+﻿#sessions {
+    left: 50px;
+    top: 50px;
+    padding: 5px;
+    font-weight:400 !important;
+}
+
+#sessionsContainer{
+    max-height: 200px;
+    overflow-y: scroll;
+}
+
+.cst {
+    color: black;
+    text-align: center;
+    padding: 5px;
+    font-weight: bold;
+}
+
+.sessionContainer {
+    font-family: sans-serif;
+    border: 1px solid lightgray;
+    padding: 5px 6px;
+    background-color: white;
+    width: 100%;
+}
+
+.sessionImage {
+    width: 48px;
+    height: 48px;
+    display: inline-block;
+}
+
+.sessionInfo {
+    display: inline-block;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.sessionDate {
+    font-size: 12px;
+    color: gray !important;
+}
+
+.sessionMore {
+    font-size: 10px;
+    font-family: sans-serif;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.sessionMoreContainer {
+    font-size: 12px;
+    border: 1px solid lightgray;
+    margin-top: 5px;
+    padding: 5px 8px;
+    display: none;
+}
+
+.sessionButtons {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+}
+
+.sessionButton {
+    width: 48%;
+    margin: 0px 5px;
+}
+
+.settingsBlockInner{
+    color:black;
+    width: 100%;
+}
+
+#settingsContainer {
+    display: flex;
+    z-index: 99;
+    width: 100%;
+}
+
+#settingsTitle {
+    display: none;
+}
+
+#settingsInnerContainer {
+    display: flex;
+    flex-direction: column;
+    z-index: 999;
+    width: 100%;
+}
+
+@media screen and (min-width: 992px){
+    #usersPanel {
+        top: 0.5rem;
+        height: calc(100% - 1.5rem);
+    }
+
+    #settingsInnerContainer {
+        width: 331px !important;
+        height: 100vh;
+    }
+
+    #settingsContainer {        
+        position: fixed;
+        top: 0px;
+        height: 100vh;
+        width: 331px !important;
+    }
+
+    #settingsTitle{
+        display: block;
+    }
+}
+
+.settingsBlock {
+    background-color: #2E2E30;
+    color: white;
+    font-weight: bold;
+    border: 1px solid white;
+    padding: 10px 5px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.settingsBlockTitle {
+    cursor: pointer;
+    text-align: center;
+}
+
+.settingsBlockInner {
+    display: none;
+}
+
+#settingsCloseBtn {
+    position: absolute;
+    right: 20px;
+    cursor: pointer;
+    display: flex;
+    top: 0;
+    bottom: 0;
+    align-items: center;
+}

@@ -1,0 +1,113 @@
+﻿form {
+    position: fixed;
+    z-index: 9999;
+    -webkit-transform: translate(-50%, 0%);
+    left: 50%;
+    transform: translate(-50%, 0%);
+    background-color: #2A2A2C;
+    padding: 10px 20px;
+    border: 3px solid #1F1F21;
+    width: 100%;
+    height: 100%;
+    top: 0;
+}
+
+.formInner{
+    width: 100%;
+    padding: 10px;
+}
+
+.secure-icon{
+    width: 80px;
+    height: 80px;
+    display: block;
+    margin: 0 auto;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+    border: 1px solid #0E0E0E;
+    -webkit-text-fill-color: white;
+    -webkit-box-shadow: 0 0 0px 1000px #151515 inset;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+.fInput {
+    background-color: #252526;
+    border: 1px solid #1F1F21;
+    color: white;
+    margin-bottom: 5px;
+    padding-left: 5px;
+    width: 100%;
+}
+
+.fLabel {
+    text-align: center;
+    color: white;
+    font-size: 20px;
+    padding: 5px 0px;
+    margin-bottom: 0.5rem;
+}
+
+.btnLink {
+    background: none;
+    color: white;
+    border: none;
+    text-align: center;
+    width: 100%;
+    text-decoration: underline;
+}
+
+.formError {
+    color:#D82323;
+    padding-bottom:0.5rem;
+}
+
+@media screen and (min-width: 992px){
+    form {
+        width: 250px;
+        height: auto;
+        top: 25%;
+    }
+}
+
+#loginProcessInfo{
+    background-color: black;
+    top: 0px;
+    right: 0px;
+    left: 0px;
+}
+
+.loader,
+.loader:after {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    margin: 0 auto;
+}
+
+.loader {
+    font-size: 10px;
+    position: relative;
+    text-indent: -9999em;
+    border-top: 0.6em solid rgba(255,255,255, 0.2);
+    border-right: 0.6em solid rgba(255,255,255, 0.2);
+    border-bottom: 0.6em solid rgba(255,255,255, 0.2);
+    border-left: 0.6em solid #ffffff;
+    -webkit-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-animation: load8 1.1s infinite linear;
+    animation: load8 1.1s infinite linear;
+}
+
+.validation-message{
+    color: white;
+}

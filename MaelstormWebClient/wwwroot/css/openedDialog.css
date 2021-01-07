@@ -1,0 +1,20 @@
+﻿.dialogInfo {
+    background-color: #2D3338;
+}
+
+#dialogInfoStatus {
+    font-size: 12px;
+}
+
+#panelsInner::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
+}
+
+#panelsInner {
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+    scrollbar-width: none; /* Firefox */
+}
+
+#dialogInfoContainer {
+    min-height: 56px;
+}

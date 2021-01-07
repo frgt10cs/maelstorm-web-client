@@ -1,0 +1,86 @@
+﻿@using MaelstormWebClient.Components
+@using MaelstormWebClient.Models;
+@using MaelstormApi;
+@using MaelstormApi.Models;
+@using Microsoft.Extensions.Logging;
+@using Microsoft.AspNetCore.Authorization;
+@inject NavigationManager NavigationManager;
+@inject WindowState WindowState;
+@implements IObserver<Window>;
+@inject ILogger<WebClient> logger;
+@attribute [Authorize]
+
+@page "/webclient"
+
+<link rel="stylesheet" href="/css/webClient.css">
+
+<ClientState Title="Connecting..." Image="/images/connecting.png"></ClientState>
+<ClientState Title="Connected" Image="/images/connected.png"></ClientState>
+<ClientState Title="Getting data from server..." Image="/images/uploading.png"></ClientState>
+<ClientState Title="Connection has been lost. Please, try to refresh the page" Image="/images/disconnected.png"></ClientState>
+
+<!--Small device menu-->
+<div class="row d-lg-none m-0">
+    <div @onclick="@(()=>WindowState.OpenWindow(Window.Dialogs))" class="col-sm-4 col-4 col-md-4 bg-dark-5 justify-center d-flex align-items-center justify-content-center py-2">
+        <svg class="bi bi-view-list invert" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
+             xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd"
+                  d="M3 4.5h10a2 2 0 012 2v3a2 2 0 01-2 2H3a2 2 0 01-2-2v-3a2 2 0 012-2zm0 1a1 1 0 00-1 1v3a1 1 0 001 1h10a1 1 0 001-1v-3a1 1 0 00-1-1H3zM1 2a.5.5 0 01.5-.5h13a.5.5 0 010 1h-13A.5.5 0 011 2zm0 12a.5.5 0 01.5-.5h13a.5.5 0 010 1h-13A.5.5 0 011 14z"
+                  clip-rule="evenodd" />
+        </svg>
+    </div>
+    <div @onclick="@(()=>WindowState.OpenWindow(Window.CurrentDialog))" class="col-sm-4 col-4 col-md-4 bg-dark-2 justify-center d-flex align-items-center justify-content-center py-2">
+        <svg class="bi bi-chat invert" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
+             xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd"
+                  d="M2.678 11.894a1 1 0 01.287.801 10.97 10.97 0 01-.398 2c1.395-.323 2.247-.697 2.634-.893a1 1 0 01.71-.074A8.06 8.06 0 008 14c3.996 0 7-2.807 7-6 0-3.192-3.004-6-7-6S1 4.808 1 8c0 1.468.617 2.83 1.678 3.894zm-.493 3.905a21.682 21.682 0 01-.713.129c-.2.032-.352-.176-.273-.362a9.68 9.68 0 00.244-.637l.003-.01c.248-.72.45-1.548.524-2.319C.743 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7-3.582 7-8 7a9.06 9.06 0 01-2.347-.306c-.52.263-1.639.742-3.468 1.105z"
+                  clip-rule="evenodd" />
+        </svg>
+    </div>
+    <div @onclick="@(()=>WindowState.OpenWindow(Window.Settings))" class="col-sm-4 col-4 col-md-4 bg-dark-2 justify-center d-flex align-items-center justify-content-center py-2">
+        <svg class="invert bi bi-gear" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M8.837 1.626c-.246-.835-1.428-.835-1.674 0l-.094.319A1.873 1.873 0 0 1 4.377 3.06l-.292-.16c-.764-.415-1.6.42-1.184 1.185l.159.292a1.873 1.873 0 0 1-1.115 2.692l-.319.094c-.835.246-.835 1.428 0 1.674l.319.094a1.873 1.873 0 0 1 1.115 2.693l-.16.291c-.415.764.42 1.6 1.185 1.184l.292-.159a1.873 1.873 0 0 1 2.692 1.116l.094.318c.246.835 1.428.835 1.674 0l.094-.319a1.873 1.873 0 0 1 2.693-1.115l.291.16c.764.415 1.6-.42 1.184-1.185l-.159-.291a1.873 1.873 0 0 1 1.116-2.693l.318-.094c.835-.246.835-1.428 0-1.674l-.319-.094a1.873 1.873 0 0 1-1.115-2.692l.16-.292c.415-.764-.42-1.6-1.185-1.184l-.291.159A1.873 1.873 0 0 1 8.93 1.945l-.094-.319zm-2.633-.283c.527-1.79 3.065-1.79 3.592 0l.094.319a.873.873 0 0 0 1.255.52l.292-.16c1.64-.892 3.434.901 2.54 2.541l-.159.292a.873.873 0 0 0 .52 1.255l.319.094c1.79.527 1.79 3.065 0 3.592l-.319.094a.873.873 0 0 0-.52 1.255l.16.292c.893 1.64-.902 3.434-2.541 2.54l-.292-.159a.873.873 0 0 0-1.255.52l-.094.319c-.527 1.79-3.065 1.79-3.592 0l-.094-.319a.873.873 0 0 0-1.255-.52l-.292.16c-1.64.893-3.433-.902-2.54-2.541l.159-.292a.873.873 0 0 0-.52-1.255l-.319-.094c-1.79-.527-1.79-3.065 0-3.592l.319-.094a.873.873 0 0 0 .52-1.255l-.16-.292c-.892-1.64.902-3.433 2.541-2.54l.292.159a.873.873 0 0 0 1.255-.52l.094-.319z" />
+            <path fill-rule="evenodd" d="M8 5.754a2.246 2.246 0 1 0 0 4.492 2.246 2.246 0 0 0 0-4.492zM4.754 8a3.246 3.246 0 1 1 6.492 0 3.246 3.246 0 0 1-6.492 0z" />
+        </svg>
+    </div>
+</div>
+<!--main container-->
+<div id="mainContainer" class="container-fluid container-lg pt-lg-2 pb-lg-4 position-relative">
+    <div class="row h-100">
+        <DialogList Dialogs="dialogs"></DialogList>
+        <OpenedDialog></OpenedDialog>
+        @if (WindowState.IsOpened(Window.Settings))
+        {
+            <Settings></Settings>
+        }
+    </div>
+    @if (WindowState.IsOpened(Window.Users))
+    {
+        <UserSearch></UserSearch>
+    }
+</div>
+
+<div id="dark"></div>
+
+@code
+{
+    private ApiClient api = ApiClient.Instance;
+    private List<Dialog> dialogs;
+    //private Dialog CurrentDialog;
+
+    protected override async Task OnInitializedAsync()
+    {
+        WindowState.Subscribe(this);
+        dialogs = await api.Dialogs.GetDialogsAsync(0, 20);
+    }
+
+
+    public void OnNext(Window window)
+    {
+        StateHasChanged();
+    }
+
+    public void OnCompleted() { }
+
+    public void OnError(Exception ex) { }
+}

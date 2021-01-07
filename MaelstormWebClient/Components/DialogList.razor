@@ -1,0 +1,85 @@
+﻿@implements IObserver<Dialog>;
+@using MaelstormApi.Models
+@inject MaelstormWebClient.Services.Abstractions.IDialogService DialogService
+<link rel="stylesheet" href="/css/dialogList.css">
+<div id="dialogListContainer" class="col-12 col-sm-12 col-md-12 col-lg-4 h-100 bg-dark-2 d-flex flex-column">
+    <div id="searchDialogContainer" class="row d-none d-lg-flex p-2 align-items-center bg-dark-2">
+        <div class="col-auto col-lg-auto">
+            <svg class="bi bi-search invert" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
+                 xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                      d="M10.442 10.442a1 1 0 011.415 0l3.85 3.85a1 1 0 01-1.414 1.415l-3.85-3.85a1 1 0 010-1.415z"
+                      clip-rule="evenodd" />
+                <path fill-rule="evenodd"
+                      d="M6.5 12a5.5 5.5 0 100-11 5.5 5.5 0 000 11zM13 6.5a6.5 6.5 0 11-13 0 6.5 6.5 0 0113 0z"
+                      clip-rule="evenodd" />
+            </svg>
+        </div>
+        <div class="col pl-0">
+            <input type="text" class="bg-dark-2 search-input text-white" id="">
+        </div>
+    </div>
+    <ul id="dialogs" class="list-group y-scroll">
+        @if (Dialogs != null)
+        {
+            @foreach (var dialog in Dialogs)
+            {
+                <li id="@(dialog.dialog.Id)" 
+                    class=@("list-group-item mt-1 text-white border-0 "+(dialog.dialog.Id==openedDialog?.dialog.Id?"opened-dialog":"bg-dark-2"))
+                    @onclick="()=>{ OpenDialog(dialog.dialog.InterlocutorId); }">
+                    <div class="row position-relative">
+                        <div class="col-auto pl-0 pr-0">
+                            <img class="dialogPhoto" src="@("/images/" + dialog.dialog.InterlocutorImage)">
+                        </div>
+                        <div class="col-8">
+                            <div class="dialogPreview">
+                                <div class="dialogTitle">
+                                    @dialog.dialog.InterlocutorNickname
+                                </div>
+                                <div class="dialogTextPreview">
+                                    @(dialog.dialog.LastMessage?.Text??"")
+                                </div>
+                                <div class="dialogDate">
+                                    @dialog.dialog.LastMessage?.DateOfSending.ToShortTimeString()
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            }
+        }
+    </ul>
+</div>
+
+@code{
+
+    [Parameter]
+    public List<Dialog> Dialogs { get; set; } = new List<Dialog>();
+
+    private Dialog openedDialog;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        DialogService.Subscribe(this);
+    }
+
+    private async Task OpenDialog(long interlocutorId)
+    {
+        await DialogService.OpenDialogByInterlocutorIdAsync(interlocutorId);
+    }
+
+    public void OnNext(Dialog dialog)
+    {
+        if (!Dialogs.Exists(d=>d.dialog.Id == dialog.dialog.Id))
+        {
+            Dialogs.Add(dialog);
+        }
+        openedDialog = dialog;
+        StateHasChanged();
+    }
+
+    public void OnCompleted() { }
+
+    public void OnError(Exception ex) { }
+}

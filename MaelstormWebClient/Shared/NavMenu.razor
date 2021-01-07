@@ -1,0 +1,35 @@
+﻿@using MaelstormWebClient.Models;
+@using MaelstormApi;
+@using Microsoft.Extensions.Logging
+@inject WindowState WindowState;
+@inject ILogger<NavMenu> logger;
+@inject NavigationManager Navigator;
+
+<ul class="navbar-nav ml-auto mr-2 navbar-item-container flex-row" id="nav-options">
+    <li class="nav-item">
+        <button id="openUsersPanelBtn" class="btn-light" @onclick="@(() => OpenWindow(Window.Users))">Users</button>
+    </li>
+    <li class="nav-item">
+        <button id="settingsOpenBtn" class="btn-light" @onclick="@(() => OpenWindow(Window.Settings))">Settings</button>
+    </li>
+    <li class="nav-item">
+        <button class="btn-light" id="logoutButton" @onclick="Logout">Quit</button>
+    </li>
+</ul>
+
+@code
+{
+    private ApiClient api = ApiClient.Instance;
+
+    private void OpenWindow(Window window)
+    {
+        WindowState.OpenWindow(window);
+    }
+
+    private void Logout()
+    {
+        WindowState.CloseAll();
+        api.Api.Logout();
+        Navigator.NavigateTo("/authentication");
+    }
+}

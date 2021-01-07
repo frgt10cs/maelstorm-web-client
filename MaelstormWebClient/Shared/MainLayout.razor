@@ -1,0 +1,14 @@
+﻿@using MaelstormApi; 
+@inherits LayoutComponentBase
+
+<link rel="stylesheet" href="/css/layout.css" />
+<nav class="navbar navbar-dark bg-dark-2">
+    <div class="justify-content-between container-lg">
+        <a class="navbar-brand" href="#">Maelstorm</a>
+        @if (MaelstormApi.ApiClient.Instance.Api.IsAuthenticated)
+        {
+            <NavMenu></NavMenu>
+        }
+    </div>        
+</nav>
+@Body

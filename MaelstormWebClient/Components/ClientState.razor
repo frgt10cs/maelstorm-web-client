@@ -1,0 +1,18 @@
+﻿<link rel="stylesheet" href="/css/clientState.css">
+<div class="clientState">
+    <img src="@Image" alt="" class="clientStateImage">
+    <div class="clientStateTitle">
+        @Title
+        Connection has been lost. Please, try to refresh the page.
+    </div>
+</div>
+
+@code{
+
+    [Parameter]
+    public string Image { get; set; }
+
+    [Parameter]
+    public string Title { get; set; }
+
+}

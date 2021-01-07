@@ -1,0 +1,26 @@
+﻿.clientState {
+    position: absolute;
+    top: 40px;
+    left: 100px;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 15px;
+    left: 0;
+    right: 0;
+    width: fit-content;
+    margin: 0 auto;
+    border: 1px solid white;
+    display: none;
+    z-index: 9999;
+}
+
+.clientStateImage {
+    background-size: cover;
+    width: 40px;
+    height: 40px;
+}
+
+.clientStateText {
+    padding-left: 5px;
+    color: white;
+} 

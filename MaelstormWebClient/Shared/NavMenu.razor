@@ -29,7 +29,7 @@
     private void Logout()
     {
         WindowState.CloseAll();
-        api.Api.Logout();
+        api.Api.LogoutAsync();
         Navigator.NavigateTo("/authentication");
     }
 }

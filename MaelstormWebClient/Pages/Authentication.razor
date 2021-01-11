@@ -66,7 +66,7 @@
             var result = await api.Api.AuthenticateAsync(authentication.Login, authentication.Password);
             if (result)
             {
-                _errorMessage = string.Empty;
+                _errorMessage = string.Empty;                                
                 NavigationManager.NavigateTo("/webclient");
             }
             _errorMessage = "Incorrect nickname or/and password";

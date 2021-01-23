@@ -22,11 +22,13 @@ namespace MaelstormWebClient.Services.Implementations
         public event Action OnDialogsUploaded;
         public event Action<Dialog> OnDialogOpened;
         public event Action<Dialog> OnDialogStateChanged;
+        public event Action<MaelstormDTO.Responses.Message> OnNewMessage;
 
         public DialogService()
         {
             _dialogs = new List<Dialog>();
             api = ApiClient.Instance;
+            api.MessageNotificationService.OnNewMessage += AddNewMessage;
             UploadCount = 20;
         }
 
@@ -43,6 +45,16 @@ namespace MaelstormWebClient.Services.Implementations
         //    }            
         //    return false;
         //}
+
+        private Task AddNewMessage(Message message)
+        {
+            var dialog = Dialogs.FirstOrDefault(d=>d.dialog.Id == message.DialogId);
+            if(dialog == null){                
+                // upload dialog
+                dialog = await api.Dialogs.GetDialogAsync(message);
+            }
+            dialog.Messages.Add(message);
+        }
 
         public async Task<bool> OpenDialogByInterlocutorIdAsync(long interlocutorId)
         {

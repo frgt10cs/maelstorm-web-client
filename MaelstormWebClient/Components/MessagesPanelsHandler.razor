@@ -1,0 +1,29 @@
+@using MaelstormDTO.Responses
+@using Models
+
+@inject MaelstormWebClient.Services.Abstractions.IDialogService DialogService
+@inject MaelstormWebClient.Services.Abstractions.IMessagesPanelsService MessagesPanelsService
+
+@foreach (var panel in MessagesPanelsService.MessagesPanels)
+{
+    <MessagesPanelComponent Messages="panel.Messages"></MessagesPanelComponent>
+}
+
+@code{
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        MessagesPanelsService.OnMessagesPanelChanged += OnMessagesPanelChanged;
+        DialogService.OnNewMessage += OnNewMessage;
+    }
+
+    private void OnMessagesPanelChanged(MessagesPanel messagesPanel)
+    {
+        StateHasChanged();
+    }
+
+    private void OnNewMessage(Message message)
+    {
+        StateHasChanged();    
+    }
+}

@@ -22,12 +22,13 @@ namespace MaelstormWebClient
             builder.Logging.SetMinimumLevel(LogLevel.Information);
 
             builder.Services.AddScoped(
-                sp => new HttpClient {BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)});
+                sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
             builder.Services.AddSingleton(
                 sp => new WindowState());
 
             builder.Services.AddSingleton<IDialogService, DialogService>();
+            builder.Services.AddSingleton<IMessagesPanelsService, MessagesPanelsService>();
 
             await builder.Build().RunAsync();
         }

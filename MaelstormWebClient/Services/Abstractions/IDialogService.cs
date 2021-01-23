@@ -13,6 +13,7 @@ namespace MaelstormWebClient.Services.Abstractions
         event Action OnDialogsUploaded;
         event Action<Dialog> OnDialogOpened;
         event Action<Dialog> OnDialogStateChanged;
+        event Action<Message> OnNewMessage;
         int UploadCount { get; }
         Task<bool> OpenDialogByInterlocutorIdAsync(long interlocutorId);
         Task UploadDialogsAsync(int offset, int count);

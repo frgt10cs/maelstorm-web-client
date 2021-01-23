@@ -1,0 +1,21 @@
+@using MaelstormDTO.Responses
+
+<div id="panelsInner" class="pt-2 pb-2 container-lg h-100 y-scroll bg-dark-3">
+    @foreach (var message in Messages)
+    {
+        <div class="messageContainer mt-2 overflow-hidden">
+            <div class=@("message text-white px-2 py-1 mw-75 rounded d-inline-block bg-dark-6 ")>
+                <div class="messageText text-break">
+                    @message.Text
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+@code{
+    [Parameter]
+    public List<Message> Messages { get; set; }
+
+}

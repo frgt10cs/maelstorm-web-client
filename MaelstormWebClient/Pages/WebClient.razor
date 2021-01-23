@@ -4,11 +4,15 @@
 @using MaelstormApi.Models;
 @using Microsoft.Extensions.Logging;
 @using Microsoft.AspNetCore.Authorization;
+@using MaelstormWebClient.Services.Abstractions;
+
 @inject NavigationManager NavigationManager;
 @inject WindowState WindowState;
-@implements IObserver<Window>;
 @inject ILogger<WebClient> logger;
+@inject IDialogService dialogService;
 @attribute [Authorize]
+
+@implements IObserver<Window>;
 
 @page "/webclient"
 
@@ -54,7 +58,7 @@
 <!--main container-->
 <div id="mainContainer" class="container-fluid container-lg pt-lg-2 pb-lg-4 position-relative">
     <div class="row h-100">
-        <DialogList Dialogs="dialogs"></DialogList>
+        <DialogList></DialogList>
         <OpenedDialog></OpenedDialog>
         @if (WindowState.IsOpened(Window.Settings))
         {
@@ -72,13 +76,12 @@
 @code
 {
     private ApiClient api = ApiClient.Instance;
-    private List<Dialog> dialogs;
     //private Dialog CurrentDialog;
 
     protected override async Task OnInitializedAsync()
     {
         WindowState.Subscribe(this);
-        dialogs = await api.Dialogs.GetDialogsAsync(0, 20);
+        await dialogService.UploadDialogsAsync();
         await api.Api.EstablishSignalRConnection();
     }
 

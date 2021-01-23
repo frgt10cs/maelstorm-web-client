@@ -1,0 +1,33 @@
+@using MaelstormApi.Models
+<li id="@(Dialog.dialog.Id)" class=@("list-group-item mt-1 text-white border-0 "+(IsOpened?"opened-dialog":"bg-dark-2"))
+    @onclick="OnClickCallback">
+    <div class="row position-relative">
+        <div class="col-auto pl-0 pr-0">
+            <img class="dialogPhoto" src="@("/images/" + Dialog.dialog.InterlocutorImage)">
+        </div>
+        <div class="col-8">
+            <div class="dialogPreview">
+                <div class="dialogTitle">
+                    @Dialog.dialog.InterlocutorNickname
+                </div>
+                <div class="dialogTextPreview">
+                    @(Dialog.dialog.LastMessage?.Text??"")
+                </div>
+                <div class="dialogDate">
+                    @Dialog.dialog.LastMessage?.DateOfSending.ToShortTimeString()
+                </div>
+            </div>
+        </div>
+    </div>
+</li>
+
+@code{
+    [Parameter]
+    public Dialog Dialog { get; set; }
+
+    [Parameter]
+    public bool IsOpened { get; set; }
+
+    [Parameter]
+    public Action OnClickCallback { get; set; }
+}

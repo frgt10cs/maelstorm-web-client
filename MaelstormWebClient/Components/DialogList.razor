@@ -1,5 +1,4 @@
-﻿@implements IObserver<Dialog>;
-@using MaelstormApi.Models
+﻿@using MaelstormApi.Models
 @inject MaelstormWebClient.Services.Abstractions.IDialogService DialogService
 <link rel="stylesheet" href="/css/dialogList.css">
 <div id="dialogListContainer" class="col-12 col-sm-12 col-md-12 col-lg-4 h-100 bg-dark-2 d-flex flex-column">
@@ -24,6 +23,10 @@
         {
             @foreach (var dialog in Dialogs)
             {
+                @* <DialogCell 
+                    Dialog="dialog" 
+                    OnClickCallback="()=>{OpenDialog(dialog.dialog.InterlocutorId);}">
+                </DialogCell> *@
                 <li id="@(dialog.dialog.Id)" 
                     class=@("list-group-item mt-1 text-white border-0 "+(dialog.dialog.Id==openedDialog?.dialog.Id?"opened-dialog":"bg-dark-2"))
                     @onclick="()=>{ OpenDialog(dialog.dialog.InterlocutorId); }">
@@ -53,33 +56,30 @@
 
 @code{
 
-    [Parameter]
-    public List<Dialog> Dialogs { get; set; } = new List<Dialog>();
+    private IReadOnlyList<Dialog> Dialogs;
 
     private Dialog openedDialog;
 
     protected override void OnInitialized()
     {
-        base.OnInitialized();
-        DialogService.Subscribe(this);
+        base.OnInitialized(); 
+        Dialogs = DialogService.Dialogs;    
+        DialogService.OnDialogOpened += OnDialogOpened;
+        DialogService.OnDialogsUploaded += OnDialogsUploaded;
     }
 
     private async Task OpenDialog(long interlocutorId)
     {
         await DialogService.OpenDialogByInterlocutorIdAsync(interlocutorId);
-    }
+    }    
 
-    public void OnNext(Dialog dialog)
+    private void OnDialogOpened(Dialog dialog)
     {
-        if (!Dialogs.Exists(d=>d.dialog.Id == dialog.dialog.Id))
-        {
-            Dialogs.Add(dialog);
-        }
-        openedDialog = dialog;
         StateHasChanged();
     }
 
-    public void OnCompleted() { }
-
-    public void OnError(Exception ex) { }
+    private void OnDialogsUploaded()
+    {
+        StateHasChanged();
+    }
 }

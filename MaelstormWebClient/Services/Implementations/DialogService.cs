@@ -9,16 +9,25 @@ using System.Threading.Tasks;
 
 namespace MaelstormWebClient.Services.Implementations
 {
-    public class DialogService:IDialogService
+    public class DialogService : IDialogService
     {
-        private List<IObserver<Dialog>> Observers;
-        public IObservable<Dialog> Observable;
-        private Dialog openedDialog;        
+        private ApiClient api;
+        private Dialog openedDialog;
         public Dialog OpenedDialog => openedDialog;
+
+        public IReadOnlyList<Dialog> Dialogs => _dialogs.AsReadOnly();
+        private List<Dialog> _dialogs;
+        public int UploadCount { get; set; }
+
+        public event Action OnDialogsUploaded;
+        public event Action<Dialog> OnDialogOpened;
+        public event Action<Dialog> OnDialogStateChanged;
 
         public DialogService()
         {
-            Observers = new List<IObserver<Dialog>>();
+            _dialogs = new List<Dialog>();
+            api = ApiClient.Instance;
+            UploadCount = 20;
         }
 
         //public async Task<bool> OpenDialogAsync(long dialogId)
@@ -38,21 +47,26 @@ namespace MaelstormWebClient.Services.Implementations
         public async Task<bool> OpenDialogByInterlocutorIdAsync(long interlocutorId)
         {
             if (openedDialog != null && openedDialog.dialog.InterlocutorId == interlocutorId) return true;
-            var dialog = await ApiClient.Instance.Dialogs.GetDialogAsync(interlocutorId);
+            Dialog dialog = _dialogs.FirstOrDefault(d => d.dialog.InterlocutorId == interlocutorId);
+            if (dialog == null) dialog = await api.Dialogs.GetDialogAsync(interlocutorId);
             if (dialog != null)
             {
                 openedDialog = dialog;
-                foreach (var observer in Observers)
-                    observer.OnNext(openedDialog);
+                OnDialogOpened?.Invoke(dialog);
                 return true;
             }
             return false;
         }
 
-        public IDisposable Subscribe(IObserver<Dialog> observer)
+        public async Task UploadDialogsAsync(int offset, int count)
         {
-            Observers.Add(observer);
-            return Disposable.Empty;
+            _dialogs.AddRange(await api.Dialogs.GetDialogsAsync(offset, count));
+            OnDialogsUploaded?.Invoke();
+        }
+
+        public async Task UploadDialogsAsync()
+        {
+            await UploadDialogsAsync(_dialogs.Count(), UploadCount);
         }
     }
 }

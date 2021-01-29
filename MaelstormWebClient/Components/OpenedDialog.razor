@@ -67,8 +67,8 @@
         StateHasChanged();
         if (!openedDialog.Messages.Any())
         {
-            openedDialog.UploadMessagesAsync(false, 0, 100);
-            openedDialog.UploadMessagesAsync(true, 0, 100);
+            openedDialog.UploadMessagesAsync(false, 0, 50);
+            openedDialog.UploadMessagesAsync(true, 0, 50);
             StateHasChanged();
         }
     }
